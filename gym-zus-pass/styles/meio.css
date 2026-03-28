@@ -1,0 +1,21 @@
+.meio {
+    width: 100%;
+    margin: 0 auto;
+    padding: 1rem;
+    justify-content: center;
+    background-color: #3F71B3;
+    border-radius: 10px;
+}
+
+.conteudo-meio{
+   justify-content: left;
+  
+}
+
+.conteudo-meio > p {
+     margin-top:15px;
+}
+
+.pesquisa-meio{
+    margin-top: 15px;
+}

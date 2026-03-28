@@ -1,0 +1,37 @@
+.conteiner-cabecario {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0.5rem;
+}
+
+.cabecario{
+  border-bottom: 10px solid #1BF83C;
+  border-radius: 10px;
+}
+
+.cabecario h1{
+  color: #1BF83C;
+}
+
+
+.login,
+.aluno,
+.instrutor {
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 2px solid black;
+  color: black;
+}
+
+.pesquisa{
+  border: 2px solid #1BF83C;
+  border-radius: 5px;
+}
+
+.botao_pesquisa{
+  margin: 5px;
+  padding: 5px;
+    border-radius: 5px;
+    border: 2px solid #1BF83C;
+}
