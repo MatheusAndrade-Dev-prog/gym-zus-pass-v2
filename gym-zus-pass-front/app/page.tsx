@@ -23,8 +23,8 @@ export default function Home() {
 
   return (
     <main>
+      <Topo />
       <div className="conteiner-principal">
-        <Topo />
         <Meio />
         <div className="my-5">
           <div className="d-flex justify-content-between align-items-center mb-4">
