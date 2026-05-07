@@ -6,7 +6,7 @@ export default function CadastroInstrutorPage() {
     <main>
       <Topo />
       <div className="mt-5">
-        <h1 className="text-center text-2xl font-bold mb-4">Cadastro de Professor</h1>
+        <h1 className="text-center text-2xl font-bold mb-4">Cadastro do Profissional</h1>
         <Instrutor />
       </div>
     </main>
