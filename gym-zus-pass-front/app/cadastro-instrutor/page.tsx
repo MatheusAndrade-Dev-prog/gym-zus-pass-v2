@@ -7,7 +7,10 @@ export default function CadastroInstrutorPage() {
       <Topo />
       <div className="mt-5">
         <h1 className="text-center text-2xl font-bold mb-4">Cadastro do Profissional</h1>
+
         <CadastroInstrutor/>
+
+       
       </div>
     </main>
   );

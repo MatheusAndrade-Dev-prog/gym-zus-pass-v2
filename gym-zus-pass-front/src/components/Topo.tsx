@@ -19,7 +19,7 @@ export default function Topo() {
         </div>
 
 <div className="flex-1 flex justify-center "> 
-     <ul className="hidden lg:flex flex-row gap-6 font-medium text-2xl">
+     <ul className="hidden lg:flex flex-row gap-6 font-medium text-3xl md:flex flex-row gap-4 font-medium text-2x1">
     <li>
       <Link href="/" className="text-gray-900 hover:text-black active:text-gray-600 visited:text-gray-600 outline-none">
         Home

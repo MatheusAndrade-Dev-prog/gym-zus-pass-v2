@@ -1,8 +1,8 @@
 export default function CadastroAluno() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
-        <h4 className="text-2xl font-bold mb-6 text-blue-600">Cadastro de Aluno</h4>
+    <div className="flex justify-center bg-gray-100 p-4">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full">
+    
         
         <form className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">

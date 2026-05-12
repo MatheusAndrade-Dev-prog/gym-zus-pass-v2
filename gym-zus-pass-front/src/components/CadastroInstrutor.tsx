@@ -1,8 +1,8 @@
 export default function CadastroInstrutor() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
-        <h4 className="text-2xl font-bold mb-6 text-blue-600">Cadastro do Profissional</h4>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-1 ">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full lg:w-4/5 max-w-[1500px] mx-auto">
+  
         
         <form className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
@@ -69,25 +69,11 @@ export default function CadastroInstrutor() {
               <input type="text" id="city" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
             </div>
 
-            <div className="md:col-span-12">
-              <label htmlFor="description" className="block text-gray-700 font-medium mb-1">Sobre mim</label>
+            <div className="md:col-span-12 text-center">
+              <label htmlFor="description" className=" text-gray-700 font-medium mb-1">Sobre mim</label>
               <textarea id="description" rows={4} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Descreva suas experiências, especialidades e um pouco sobre você..."></textarea>
             </div>
 
-            <div className="md:col-span-4">
-              <label htmlFor="facebook" className="block text-gray-700 font-medium mb-1">Facebook</label>
-              <input type="text" id="facebook" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Link do perfil" />
-            </div>
-
-            <div className="md:col-span-4">
-              <label htmlFor="instagram" className="block text-gray-700 font-medium mb-1">Instagram</label>
-              <input type="text" id="instagram" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Link do perfil" />
-            </div>
-
-            <div className="md:col-span-4">
-              <label htmlFor="linkedin" className="block text-gray-700 font-medium mb-1">LinkedIn</label>
-              <input type="text" id="linkedin" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Link do perfil" />
-            </div>
           </div>
 
           <hr className="my-6 border-gray-200" />
