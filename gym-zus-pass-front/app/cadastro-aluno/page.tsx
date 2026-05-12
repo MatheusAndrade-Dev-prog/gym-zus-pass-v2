@@ -1,5 +1,5 @@
 import Topo from '@/components/Topo';
-import Aluno from '@/components/Aluno';
+import CadastroAluno from '@/components/CadastroAluno';
 
 export default function CadastroAlunoPage() {
   return (
@@ -7,7 +7,7 @@ export default function CadastroAlunoPage() {
       <Topo />
       <div className="mt-5">
         <h1 className="text-center text-2xl font-bold mb-4">Cadastro de Aluno</h1>
-        <Aluno />
+        <CadastroAluno />
       </div>
     </main>
   );
