@@ -2,15 +2,29 @@
 
 import { useState, FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  // Adicionamos um estado para escolher o tipo durante o desenvolvimento
+  const [tipoSimulado, setTipoSimulado] = useState("aluno"); 
+  const router = useRouter();
 
-  const handleLogin = (e: FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Tentativa de login com:", { email, senha });
-    alert("Login realizado com sucesso! (Simulação)");
+    console.log("Simulando login para:", { email, tipo: tipoSimulado });
+
+    // A chamada fetch foi removida para evitar o erro de conexão (ERR_CONNECTION_REFUSED)
+    // Quando seu back-end estiver pronto, você voltará a usar o fetch aqui.
+
+    if (tipoSimulado === "instrutor") {
+      console.log("Redirecionando para instrutor...");
+      router.push("/usuario-instrutor");
+    } else {
+      console.log("Redirecionando para aluno...");
+      router.push("/usuario-aluno");
+    }
   };
 
   return (
@@ -24,7 +38,20 @@ export default function Login() {
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-800 mb-6 text-primary">Tela de login</h1>
+          <h1 className="text-2xl font-bold text-gray-800 mb-6 text-primary">Tela de login (Modo Dev)</h1>
+
+          {/* Seletor para alternar entre os perfis */}
+          <div className="mb-4 text-left">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Perfil (Simulação)</label>
+            <select 
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none"
+              value={tipoSimulado}
+              onChange={(e) => setTipoSimulado(e.target.value)}
+            >
+              <option value="aluno">Aluno</option>
+              <option value="instrutor">Instrutor</option>
+            </select>
+          </div>
 
           <div className="relative text-left mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -52,15 +79,6 @@ export default function Login() {
             />
           </div>
 
-          <div className="flex items-center gap-2 mb-6 text-left">
-            <input 
-              type="checkbox" 
-              id="remember" 
-              className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer"
-            />
-            <label htmlFor="remember" className="text-sm text-gray-600 cursor-pointer">Lembrar-me</label>
-          </div>
-
           <button 
             type="submit" 
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-md transition-all active:scale-95 mb-4"
@@ -74,8 +92,6 @@ export default function Login() {
               Voltar
             </Link>
           </p>
-
-          <p className="mt-8 text-xs text-gray-400 text-muted">© 2026</p>
         </form>
       </main>
     </div>

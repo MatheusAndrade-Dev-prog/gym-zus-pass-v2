@@ -1,5 +1,5 @@
 import Topo from "@/components/Topo";
-import UsuarioInstrutor from "@/components/components/UsuarioIntrustor"; // Ajuste o caminho conforme a localização real
+import UsuarioInstrutor from "@/components/UsuarioIntrustor"; // Ajuste o caminho conforme a localização real
 
 export default function UsuarioInstrutorPage() {
   return (
