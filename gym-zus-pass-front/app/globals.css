@@ -28,7 +28,9 @@ body {
     padding: 1rem;
 }
 
-
+a {
+  text-decoration: none;
+}
 
 
 @media (prefers-color-scheme: dark) {

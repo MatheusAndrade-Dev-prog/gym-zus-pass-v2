@@ -7,41 +7,27 @@ export default function Topo() {
   const [mostrarOpcoes, setMostrarOpcoes] = useState(false);
 
   return (
-    <nav className="w-full bg-white shadow-md">
-    <div className="flex flex-col w-full ">
-
-      <nav className="conteiner-cabecario flex items-center justify-between flex-wrap px-6 py-2"> 
+    <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/70 border-b border-border/50">
+      <div className="mx-auto px-6 h-16 flex items-center justify-between ">
+    <nav className="w-full px-6 h-16 flex items-center justify-between">
+    <div className="flex flex-col w-full px-6 py-2">
+      
+      <nav className="hidden md:flex  items-center justify-between flex-wrap px-5 py-2"> 
         
-        <div className="shrink-0 mr-4">
+        <div className="font-display text-2xl tracking-wider flex items-center gap-2">
           <h3 className="text-ml font-bold text-green-500 tracking-tight">
             GymZus Pass
           </h3>
         </div>
 
-<div className="flex-1 flex justify-center "> 
-     <ul className="hidden lg:flex flex-row gap-6 font-medium text-3xl md:flex flex-row gap-4 font-medium text-2x1">
-    <li>
-      <Link href="/" className="text-gray-900 hover:text-black active:text-gray-600 visited:text-gray-600 outline-none">
-        Home
-      </Link>
-    </li>
-    <li>
-      <Link href="/explorar" className="text-gray-900 hover:text-black active:text-gray-600 visited:text-gray-600 outline-none">
-        Explorar
-      </Link>
-    </li>
-    <li>
-      <Link href="/solicitacoes" className="text-gray-900 hover:text-black active:text-gray-600 visited:text-gray-600 outline-none">
-        Solicitações
-      </Link>
-    </li>
-    <li>
-      <Link href="/sobre" className="text-gray-900 hover:text-black active:text-gray-600 visited:text-gray-600 outline-none">
-        Sobre
-      </Link>
-    </li>
-  </ul>
-</div>
+
+   <nav className="flex items-center gap-8 text-sm font-medium text-muted-foreground">
+  <a href="/" className="no-underline hover:text-foreground transition text-2xl">Home</a>
+  <a href="/explorar" className="no-underline text-muted-foreground hover:text-foreground transition text-2xl">Explorar</a>
+  <a href="/solicitacoes" className="no-underline text-muted-foreground hover:text-foreground transition text-2xl">Solicitacoes</a>
+  <a href="/sobre" className="no-underline text-muted-foreground hover:text-foreground transition text-2xl">Sobre</a>
+   </nav>
+
 
         
         <div className="flex flex-row items-center gap-3 ml-auto"> 
@@ -86,5 +72,8 @@ export default function Topo() {
       <div className="cabecario"></div>
     </div>
     </nav>
+    </div>
+    </header>
+    
   );
 }

@@ -1,5 +1,6 @@
 export default function Meio() {
   return (
+    <section className="relative w-full pt-24 pb-32 overflow-hidden bg-hero">
     <div className="h-50 flex flex-col items-left  meio">
       <h1 className="text-5xl text-left font-bold conteudo-meio">
         Transforme e evolua seu corpo com o GymZus Pass, uma plataforma inovadora de aulas particulares!
@@ -15,6 +16,7 @@ export default function Meio() {
 
       </div>
     </div>
+    </section>
   );
 }
 
