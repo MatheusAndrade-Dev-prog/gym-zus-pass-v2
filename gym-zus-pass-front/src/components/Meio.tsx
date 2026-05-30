@@ -15,12 +15,14 @@ export default function Meio() {
   };
 
   return (
-    <section className="relative w-full overflow-hidden">
-      <div className="relative w-full min-h-screen bg-gray-950 flex items-center">
+   <section className="relative w-full overflow-hidden">
+  <div className="relative w-full min-h-screen bg-gray-950 flex items-center">
 
-        {/* grade de fundo */}
-        <div className="absolute inset-0 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]" />
+    {/* grade de fundo */}
+    <div className="absolute inset-0 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]" />
 
+    {/* degradê vermelho */}
+    <div className="absolute inset-0 bg-gradient-to-br from-red-900/50 via-transparent to-transparent" />
         {/* coluna esquerda — texto + form */}
         <div className="relative z-10 flex-1 flex flex-col gap-8 pl-16 pr-8">
           <h1 className="font-display text-red-700 text-6xl sm:text-7xl lg:text-8xl leading-[0.9] uppercase">
@@ -57,7 +59,9 @@ export default function Meio() {
             alt="Atleta treinando"
             className="h-screen w-auto object-cover shadow-2xl shadow-black/60"
           />
-          <div className='absolute inset-0 bg-gradient-to-r from-gray-950 via-transparent to-transparent' />
+          {/* gradiente transparente nas bordas */}
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/10 to-transparent" />
         </div>
 
       </div>
