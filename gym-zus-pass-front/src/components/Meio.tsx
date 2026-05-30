@@ -1,46 +1,66 @@
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Search } from 'lucide-react';
+
 export default function Meio() {
+  const [query, setQuery] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/resultados?q=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
   return (
-    <section className="relative w-full pt-24 pb-32 overflow-hidden bg-hero">
-    <div className="h-full flex flex-col items-left  meio">
-      <div className="relative w-full h-screen bg-gray-950 flex items-center">
-      
-      <div className="absolute inset-0 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]" />
+    <section className="relative w-full overflow-hidden">
+      <div className="relative w-full min-h-screen bg-gray-950 flex items-center">
 
-      {/* texto esquerda */}
-      <div className="relative z-10 flex-1 pl-16">
-        <h1 className="font-display text-red-700  text-6xl sm:text-7xl lg:text-8xl leading-[0.9] uppercase">
-        Transforme e evolua seu corpo com o GymZus Pass, uma plataforma inovadora de aulas particulares!
-      </h1>
-        <p className="text-gray-400 mt-4">Intermediação precisa entre aluno e professor</p>
-      </div>
+        {/* grade de fundo */}
+        <div className="absolute inset-0 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]" />
 
-      {/* imagem direita */}
-      <div className="relative z-10 flex-1 flex justify-end pr-16">
-        <img
-          src="./src/image/hero-athlete.jpg"
-          alt="descrição"
-          className="w-80 h-80 object-cover rounded-xl"
-        />
-      </div>
+        {/* coluna esquerda — texto + form */}
+        <div className="relative z-10 flex-1 flex flex-col gap-8 pl-16 pr-8">
+          <h1 className="font-display text-red-700 text-6xl sm:text-7xl lg:text-8xl leading-[0.9] uppercase">
+            Transforme e evolua seu corpo com o GymZus Pass, uma plataforma inovadora de aulas particulares!
+          </h1>
+          <p className="text-gray-400 text-lg">Intermediação precisa entre aluno e professor</p>
 
-    </div>
-       <div className="relative max-w-7x mx-auto px-6 grid lg:grid-cols-12 gap-12 items-center">
-        <div className="lg:col-span-7 space-y-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 
-        rounded-full border border-border bg-card/50 text-xs font-medium text-muted-foreground">
-      
-      <div className="h-12 flex items-center pesquisa-meio">
-        <form className="max-w-lg mx-8 flex flex-row items-center gap-2" role="search">
-          <input type="search" className="form-control form-control-dark text-bg-Light bg-white rounded-lg" placeholder="Search..." aria-label="Search"/>
-          <button className="" type="submit">Search</button>
-        </form>
+          {/* form de busca */}
+          <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full max-w-xl">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Buscar professor, modalidade..."
+                aria-label="Buscar"
+                className="w-full h-12 pl-10 pr-4 rounded-xl bg-gray-800 border  border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-red-600 transition-colors"
+              />
+            </div>
+            <button
+              type="submit"
+              className="h-12 px-6  rounded-full border border-red-600 bg-red-700 hover:bg-red-600 text-white font-medium transition-colors whitespace-nowrap"
+            >
+              Buscar
+            </button>
+          </form>
         </div>
+
+        {/* coluna direita — imagem */}
+        <div className="relative z-10 flex-1 flex justify-end">
+          <img
+            src="/image/Studio Shot 02.jpg"
+            alt="Atleta treinando"
+            className="h-screen w-auto object-cover shadow-2xl shadow-black/60"
+          />
+          <div className='absolute inset-0 bg-gradient-to-r from-gray-950 via-transparent to-transparent' />
         </div>
+
       </div>
-      </div>
-    </div>
     </section>
   );
 }
-
-/**/
