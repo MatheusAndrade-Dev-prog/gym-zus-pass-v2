@@ -6,15 +6,15 @@ export default function Rodape() {
          <div className="flex items-center gap-2">
          <div className="size-9 rounded-md bg-energy grid place-items-center">
       </div>
-      <span className="font-display text-xl tracking-wider">©GymZus Pass.</span>
+     </div>
       </div>
-      <p className="text-sm text-muted-foreground max-w-xs"> Todos os direitos reservados.</p>
-      </div>
-      
       </div>
       </footer>
     
   );
 }
+{/* <span className="font-display text-xl tracking-wider">©GymZus Pass.
+      </div>
+      <p className="text-sm text-muted-foreground max-w-xs"> Todos os direitos reservados.</p>
+      </div>*/}
 
-/**/
