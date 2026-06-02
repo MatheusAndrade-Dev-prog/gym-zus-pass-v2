@@ -1,8 +1,19 @@
 export default function Rodape() {
   return (
-    <div className="h-20 flex items-center justify-center rodape">
-      <p className="text-sm text-gray-500">©GymZus Pass. Todos os direitos reservados.</p>
-    </div>
+      <footer className="border-t border-border py-16">
+         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+         <div className="space-y-4">
+         <div className="flex items-center gap-2">
+         <div className="size-9 rounded-md bg-energy grid place-items-center">
+      </div>
+      <span className="font-display text-xl tracking-wider">©GymZus Pass.</span>
+      </div>
+      <p className="text-sm text-muted-foreground max-w-xs"> Todos os direitos reservados.</p>
+      </div>
+      
+      </div>
+      </footer>
+    
   );
 }
 

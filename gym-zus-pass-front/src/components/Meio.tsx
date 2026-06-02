@@ -25,7 +25,7 @@ export default function Meio() {
     <div className="absolute inset-0 bg-gradient-to-br from-red-900/50 via-transparent to-transparent" />
         {/* coluna esquerda — texto + form */}
         <div className="relative z-10 flex-1 flex flex-col gap-8 pl-16 pr-8">
-          <h1 className="font-display text-red-700 text-6xl sm:text-7xl lg:text-8xl leading-[0.9] uppercase">
+          <h1 className="font-display text-white text-red-700 text-6xl sm:text-7xl lg:text-8xl leading-[0.9] uppercase">
             Transforme e evolua seu corpo com o GymZus Pass, uma plataforma inovadora de aulas particulares!
           </h1>
           <p className="text-gray-400 text-lg">Intermediação precisa entre aluno e professor</p>

@@ -46,6 +46,7 @@ export default function Home() {
         onClose={() => setIsModalOpen(false)} 
         onAdd={() => setIsModalOpen(false)} 
       />
+    
     </main>
   );
 }
