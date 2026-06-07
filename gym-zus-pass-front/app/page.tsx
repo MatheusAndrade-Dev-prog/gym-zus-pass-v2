@@ -28,7 +28,7 @@ export default function Home() {
         <Meio />
         <div className="my-5">
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2 className="mb-0">Personal Trainers em Destaque</h2>
+            <h2 className="mb-0 text-white">Personal Trainers em Destaque</h2>
             <button
               type="button"
               className="btn btn-warning"

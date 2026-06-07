@@ -15,7 +15,7 @@ export default function Topo() {
       <nav className="hidden md:flex  items-center justify-between flex-wrap px-5 py-2"> 
         
         <div className="font-display text-2xl tracking-wider flex items-center gap-2">
-          <h3 className="text-ml font-bold text-green-500 tracking-tight">
+          <h3 className="text-ml text-white font-bold text-green-500 tracking-tight">
             GymZus Pass
           </h3>
         </div>
