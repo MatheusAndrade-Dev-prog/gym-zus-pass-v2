@@ -12,8 +12,8 @@ export default function PaginaExplorar() {
     <main>
       <Topo />
       <div className="container mx-auto p-4">
-        <h1>Página de Exploração</h1>
-        <p>Aqui você pode explorar os instrutores disponíveis.</p>
+        <h1 className="text-3xl font-bold text-white text-center mb-4">Página de Exploração</h1>
+        <p className="text-white text-center mb-8">Aqui você pode explorar os instrutores disponíveis.</p>
         
         <button 
           onClick={() => setIsModalOpen(true)}

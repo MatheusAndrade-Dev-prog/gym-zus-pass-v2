@@ -9,14 +9,52 @@ export default function CadastroAluno() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
+  
+  // Campos de Endereço
   const [cep, setCep] = useState("");
   const [endereco, setEndereco] = useState("");
   const [numero, setNumero] = useState("");
   const [complemento, setComplemento] = useState("");
   const [bairro, setBairro] = useState("");
   const [cidade, setCidade] = useState("");
+  const [estado, setEstado] = useState(""); // ✅ Adicionado estado para a UF (Ex: SP, RJ)
+  
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  // ✅ FUNÇÃO MÁGICA: Busca o CEP automaticamente
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Remove tudo que não for número (ex: traços)
+    const cepDigitado = e.target.value.replace(/\D/g, "");
+    setCep(cepDigitado);
+
+    // Quando o CEP tiver exatamente 8 dígitos, faz a busca na API ViaCEP
+    if (cepDigitado.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cepDigitado}/json/`);
+        const data = await response.json();
+
+        // Se a API retornar erro (CEP inexistente)
+        if (data.erro) {
+          alert("CEP não encontrado!");
+          return;
+        }
+
+        // ✅ Preenche os campos automaticamente com os dados da API
+        setEndereco(data.logradouro || "");
+        setBairro(data.bairro || "");
+        setCidade(data.localidade || "");
+        setEstado(data.uf || "");
+
+        // Pula o cursor automaticamente para o campo "Número"
+        document.getElementById("campo-numero")?.focus();
+
+      } catch (error) {
+        console.error("Erro ao buscar o CEP:", error);
+        alert("Erro na busca do CEP. Verifique sua conexão.");
+      }
+    }
+  };
 
   // ✅ Recebe o evento do form
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -31,21 +69,22 @@ export default function CadastroAluno() {
         dataDeNascimento: dataNascimento
           ? Timestamp.fromDate(new Date(dataNascimento))
           : null,
-        cep: cep.replace(/\D/g, ""),
+        cep: cep,
         endereço: endereco,
         numero: String(numero),
         complemento: complemento,
         bairro: bairro,
         cidade: cidade,
+        estado: estado, // ✅ Salvando o estado (UF) no banco de dados
       });
 
       alert("Aluno cadastrado com sucesso!");
 
+      // Limpa os campos após salvar
       setNomeCompleto(""); setEmail(""); setSenha(""); setDataNascimento("");
       setCep(""); setEndereco(""); setNumero(""); setComplemento("");
-      setBairro(""); setCidade("");
+      setBairro(""); setCidade(""); setEstado("");
 
-      // ✅ Crase (template literal) — era aspas simples antes, por isso não funcionava
       router.push(`/usuario-aluno/${docRef.id}`);
 
     } catch (error) {
@@ -54,20 +93,19 @@ export default function CadastroAluno() {
     } finally {
       setLoading(false);
     }
-  }; // ✅ handleSubmit fecha aqui
+  };
 
-  // ✅ Return do componente, fora do handleSubmit
   return (
-    <div className="flex justify-center bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full">
+    <div className="flex justify-center bg-gray-100 p-4 min-h-screen items-center">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
 
-        {/* ✅ onSubmit no form */}
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">Cadastro de Aluno</h2>
+
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 
             <div className="md:col-span-12">
               <label className="block text-gray-700 font-medium mb-1">Nome Completo</label>
-              {/* ✅ value + onChange em todos os inputs */}
               <input
                 type="text"
                 value={nomeCompleto}
@@ -113,14 +151,16 @@ export default function CadastroAluno() {
               />
             </div>
 
+            {/* ✅ CAMPO DE CEP (Ativa a API ViaCEP) */}
             <div className="md:col-span-4">
-              <label className="block text-gray-700 font-medium mb-1">CEP</label>
+              <label className="block text-gray-700 font-medium mb-1 text-blue-600">CEP</label>
               <input
                 type="text"
+                maxLength={9}
                 value={cep}
-                onChange={(e) => setCep(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="00000-000"
+                onChange={handleCepChange} // ✅ Chama a função mágica a cada número digitado
+                className="w-full border-2 border-blue-400 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                placeholder="Apenas números"
                 required
               />
             </div>
@@ -131,7 +171,7 @@ export default function CadastroAluno() {
                 type="text"
                 value={endereco}
                 onChange={(e) => setEndereco(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
                 placeholder="Rua..."
                 required
               />
@@ -140,6 +180,7 @@ export default function CadastroAluno() {
             <div className="md:col-span-3">
               <label className="block text-gray-700 font-medium mb-1">Número</label>
               <input
+                id="campo-numero" // ✅ ID usado para focar aqui automaticamente
                 type="text"
                 value={numero}
                 onChange={(e) => setNumero(e.target.value)}
@@ -162,24 +203,37 @@ export default function CadastroAluno() {
               />
             </div>
 
-            <div className="md:col-span-6">
+            <div className="md:col-span-5">
               <label className="block text-gray-700 font-medium mb-1">Bairro</label>
               <input
                 type="text"
                 value={bairro}
                 onChange={(e) => setBairro(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
                 required
               />
             </div>
 
-            <div className="md:col-span-6">
+            <div className="md:col-span-5">
               <label className="block text-gray-700 font-medium mb-1">Cidade</label>
               <input
                 type="text"
                 value={cidade}
                 onChange={(e) => setCidade(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+                required
+              />
+            </div>
+
+            {/* ✅ CAMPO ESTADO (UF) */}
+            <div className="md:col-span-2">
+              <label className="block text-gray-700 font-medium mb-1">UF</label>
+              <input
+                type="text"
+                value={estado}
+                onChange={(e) => setEstado(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+                placeholder="SP, RJ..."
                 required
               />
             </div>
@@ -192,7 +246,7 @@ export default function CadastroAluno() {
             disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition-colors shadow-lg disabled:opacity-50"
           >
-            {loading ? "Cadastrando..." : "Finalizar Cadastro"}
+            {loading ? "Salvando no banco..." : "Finalizar Cadastro"}
           </button>
         </form>
       </div>

@@ -11,15 +11,53 @@ export default function CadastroInstrutor() {
   const [dataNascimento, setDataNascimento] = useState("");
   const [cpf, setCpf] = useState("");
   const [cref, setCref] = useState("");
+  
+  // Campos de Endereço
   const [cep, setCep] = useState("");
   const [endereco, setEndereco] = useState("");
   const [numero, setNumero] = useState("");
   const [complemento, setComplemento] = useState("");
   const [bairro, setBairro] = useState("");
   const [cidade, setCidade] = useState("");
+  const [estado, setEstado] = useState(""); // ✅ Adicionado estado para a UF (Ex: SP, RJ)
+  
   const [descricao, setDescricao] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  // ✅ FUNÇÃO MÁGICA: Busca o CEP automaticamente na API ViaCEP
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Remove tudo que não for número
+    const cepDigitado = e.target.value.replace(/\D/g, "");
+    setCep(cepDigitado);
+
+    // Quando o CEP tiver exatamente 8 dígitos, faz a busca na API ViaCEP
+    if (cepDigitado.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cepDigitado}/json/`);
+        const data = await response.json();
+
+        // Se a API retornar erro (CEP inexistente)
+        if (data.erro) {
+          alert("CEP não encontrado!");
+          return;
+        }
+
+        // ✅ Preenche os campos automaticamente com os dados da API
+        setEndereco(data.logradouro || "");
+        setBairro(data.bairro || "");
+        setCidade(data.localidade || "");
+        setEstado(data.uf || "");
+
+        // Pula o cursor automaticamente para o campo "Número"
+        document.getElementById("campo-numero")?.focus();
+
+      } catch (error) {
+        console.error("Erro ao buscar o CEP:", error);
+        alert("Erro na busca do CEP. Verifique sua conexão.");
+      }
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,20 +73,22 @@ export default function CadastroInstrutor() {
           : null,
         cpf: cpf.replace(/\D/g, ""),
         cref: cref,
-        cep: cep.replace(/\D/g, ""),
+        cep: cep,
         endereço: endereco,
         numero: String(numero),
         complemento: complemento,
         bairro: bairro,
         cidade: cidade,
+        estado: estado, // ✅ Salvando o estado (UF) no banco de dados
         descricao: descricao,
       });
 
       alert("Instrutor cadastrado com sucesso!");
 
+      // Limpa os campos
       setNomeCompleto(""); setEmail(""); setSenha(""); setDataNascimento("");
       setCpf(""); setCref(""); setCep(""); setEndereco(""); setNumero("");
-      setComplemento(""); setBairro(""); setCidade(""); setDescricao("");
+      setComplemento(""); setBairro(""); setCidade(""); setEstado(""); setDescricao("");
 
       // ✅ Redireciona para o perfil do instrutor
       router.push(`/usuario-instrutor/${docRef.id}`);
@@ -65,7 +105,8 @@ export default function CadastroInstrutor() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-1">
       <div className="bg-white p-8 rounded-lg shadow-md w-full lg:w-4/5 max-w-[1500px] mx-auto">
 
-        {/* ✅ onSubmit no form */}
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">Cadastro de Instrutor</h2>
+
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 
@@ -111,23 +152,24 @@ export default function CadastroInstrutor() {
                 placeholder="012345-G/SP" required />
             </div>
 
+            {/* ✅ CAMPO DE CEP (Ativa a API ViaCEP) */}
             <div className="md:col-span-4">
-              <label className="block text-gray-700 font-medium mb-1">CEP</label>
-              <input type="text" value={cep} onChange={(e) => setCep(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="00000-000" required />
+              <label className="block text-gray-700 font-medium mb-1 text-blue-600">CEP</label>
+              <input type="text" maxLength={9} value={cep} onChange={handleCepChange}
+                className="w-full border-2 border-blue-400 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                placeholder="Apenas números" required />
             </div>
 
             <div className="md:col-span-5">
               <label className="block text-gray-700 font-medium mb-1">Endereço (Rua/Av)</label>
               <input type="text" value={endereco} onChange={(e) => setEndereco(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
                 placeholder="Rua..." required />
             </div>
 
             <div className="md:col-span-3">
               <label className="block text-gray-700 font-medium mb-1">Número</label>
-              <input type="text" value={numero} onChange={(e) => setNumero(e.target.value)}
+              <input id="campo-numero" type="text" value={numero} onChange={(e) => setNumero(e.target.value)}
                 className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nº" required />
             </div>
@@ -141,22 +183,30 @@ export default function CadastroInstrutor() {
                 placeholder="Apartamento, bloco, fundos..." />
             </div>
 
-            <div className="md:col-span-6">
+            <div className="md:col-span-5">
               <label className="block text-gray-700 font-medium mb-1">Bairro</label>
               <input type="text" value={bairro} onChange={(e) => setBairro(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
                 required />
             </div>
 
-            <div className="md:col-span-6">
+            <div className="md:col-span-5">
               <label className="block text-gray-700 font-medium mb-1">Cidade</label>
               <input type="text" value={cidade} onChange={(e) => setCidade(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
                 required />
+            </div>
+
+            {/* ✅ CAMPO ESTADO (UF) */}
+            <div className="md:col-span-2">
+              <label className="block text-gray-700 font-medium mb-1">UF</label>
+              <input type="text" value={estado} onChange={(e) => setEstado(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+                placeholder="SP, RJ..." required />
             </div>
 
             <div className="md:col-span-12 text-center">
-              <label className="block text-gray-700 font-medium mb-1">Descrição</label>
+              <label className="block text-gray-700 font-medium mb-1 text-left">Descrição</label>
               <textarea value={descricao} onChange={(e) => setDescricao(e.target.value)}
                 rows={4}
                 className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
