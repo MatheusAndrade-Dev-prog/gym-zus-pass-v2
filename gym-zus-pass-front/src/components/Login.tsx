@@ -3,6 +3,7 @@
 import { useState, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,21 +12,23 @@ export default function Login() {
   const [tipoSimulado, setTipoSimulado] = useState("aluno"); 
   const router = useRouter();
 
-  const handleLogin = async (e: FormEvent) => {
-    e.preventDefault();
-    console.log("Simulando login para:", { email, tipo: tipoSimulado });
+ const handleLogin = async (e: FormEvent) => {
+  e.preventDefault();
 
-    // A chamada fetch foi removida para evitar o erro de conexão (ERR_CONNECTION_REFUSED)
-    // Quando seu back-end estiver pronto, você voltará a usar o fetch aqui.
+  try {
+    const auth = getAuth();
+    const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+    const uid = userCredential.user.uid;
 
     if (tipoSimulado === "instrutor") {
-      console.log("Redirecionando para instrutor...");
-      router.push("/usuario-instrutor");
+      router.push(`/usuario-instrutor/${uid}`);
     } else {
-      console.log("Redirecionando para aluno...");
-      router.push("/usuario-aluno");
+      router.push(`/usuario-aluno/${uid}`);
     }
-  };
+  } catch (error) {
+    alert("Email ou senha incorretos.");
+  }
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">

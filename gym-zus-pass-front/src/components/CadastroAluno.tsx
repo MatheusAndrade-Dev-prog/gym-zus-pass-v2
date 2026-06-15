@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { db } from "../firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
 export default function CadastroAluno() {
@@ -57,43 +58,53 @@ export default function CadastroAluno() {
   };
 
   // ✅ Recebe o evento do form
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setLoading(true);
+ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  setLoading(true);
 
-    try {
-      const docRef = await addDoc(collection(db, "cadastroAluno"), {
-        nome_completo: nomeCompleto,
-        email: email,
-        senha: senha,
-        dataDeNascimento: dataNascimento
-          ? Timestamp.fromDate(new Date(dataNascimento))
-          : null,
-        cep: cep,
-        endereço: endereco,
-        numero: String(numero),
-        complemento: complemento,
-        bairro: bairro,
-        cidade: cidade,
-        estado: estado, // ✅ Salvando o estado (UF) no banco de dados
-      });
+  try {
+    // 1. Cria o usuário no Firebase Auth
+    const auth = getAuth();
+    const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+    const uid = userCredential.user.uid;
 
-      alert("Aluno cadastrado com sucesso!");
+    // 2. Salva no Firestore usando o uid como id do documento
+    await setDoc(doc(db, "cadastroAluno", uid), {
+      nome_completo: nomeCompleto,
+      email: email,
+      dataDeNascimento: dataNascimento
+        ? Timestamp.fromDate(new Date(dataNascimento))
+        : null,
+      cep: cep,
+      endereço: endereco,
+      numero: String(numero),
+      complemento: complemento,
+      bairro: bairro,
+      cidade: cidade,
+      estado: estado,
+    });
 
-      // Limpa os campos após salvar
-      setNomeCompleto(""); setEmail(""); setSenha(""); setDataNascimento("");
-      setCep(""); setEndereco(""); setNumero(""); setComplemento("");
-      setBairro(""); setCidade(""); setEstado("");
+    alert("Aluno cadastrado com sucesso!");
 
-      router.push(`/usuario-aluno/${docRef.id}`);
+    // Limpa os campos
+    setNomeCompleto(""); setEmail(""); setSenha(""); setDataNascimento("");
+    setCep(""); setEndereco(""); setNumero(""); setComplemento("");
+    setBairro(""); setCidade(""); setEstado("");
 
-    } catch (error) {
-      console.error("Erro ao integrar com o Firestore:", error);
-      alert("Houve um erro na integração com o banco de dados.");
-    } finally {
-      setLoading(false);
+    // 3. Redireciona com o uid real
+    router.push(`/usuario-aluno/${uid}`);
+
+  } catch (error: any) {
+    if (error.code === "auth/email-already-in-use") {
+      alert("Este e-mail já está cadastrado.");
+    } else {
+      console.error("Erro no cadastro:", error);
+      alert("Houve um erro no cadastro.");
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="flex justify-center bg-gray-100 p-4 min-h-screen items-center">

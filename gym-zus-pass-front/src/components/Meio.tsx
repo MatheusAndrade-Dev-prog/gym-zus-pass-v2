@@ -16,7 +16,7 @@ export default function Meio() {
 
   return (
    <section className="relative w-full overflow-hidden">
-  <div className="relative w-full min-h-screen bg-gray-950 flex items-center">
+  <div className="relative w-full min-h-screen bg-gray-950 flex items-center ">
 
     {/* grade de fundo */}
     <div className="absolute inset-0 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]" />
@@ -24,7 +24,7 @@ export default function Meio() {
     {/* degradê vermelho */}
     <div className="absolute inset-0 bg-gradient-to-br from-red-900/50 via-transparent to-transparent" />
         {/* coluna esquerda — texto + form */}
-        <div className="relative z-10 flex-1 flex flex-col gap-8 pl-16 pr-8">
+        <div className="relative z-10 flex-1 flex flex-col gap-8 pl-16 pr-8 p-1">
           <h1 className="font-display text-white text-red-700 text-6xl sm:text-7xl lg:text-8xl leading-[0.9] uppercase">
             Transforme e evolua seu corpo com o GymZus Pass, uma plataforma inovadora de aulas particulares!
           </h1>
