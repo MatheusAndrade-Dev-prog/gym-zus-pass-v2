@@ -41,9 +41,6 @@ export default function Topo() {
           </div>
 
           
-          <Link href="/login" className="border border-black text-gray-900 px-2 py-1 border-r-2 rounded-md">
-            Fazer Login
-          </Link>
 
           <div className="relative border bg-yellow-400 border-black px-1 py-1 border-r-2  rounded-md hover:bg-gray-100 transition-colors">
             <button 
@@ -55,12 +52,7 @@ export default function Topo() {
 
             {mostrarOpcoes && (
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-xl z-50 flex flex-col  p-2 gap-2">
-                <Link href="/cadastro-aluno" className="px-4 py-2 text-sm  text-center text-gray-700 bg-yellow-400 hover:bg-yellow-500 rounded-md transition-colors" onClick={() => setMostrarOpcoes(false)}>
-                  Sou Aluno
-                </Link>
-                <Link href="/cadastro-instrutor" className="px-4 py-2 text-sm text-center text-gray-700rounded-md bg-yellow-400 hover:bg-yellow-500 transition-colors" onClick={() => setMostrarOpcoes(false)}>
-                  Sou Instrutor
-                </Link>
+                
               </div>
             )}
           </div>
