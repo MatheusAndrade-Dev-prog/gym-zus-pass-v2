@@ -45,7 +45,7 @@ export default function Login() {
 
           {/* Seletor para alternar entre os perfis */}
           <div className="mb-4 text-left">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Perfil (Simulação)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
             <select 
               className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none"
               value={tipoSimulado}
