@@ -19,12 +19,7 @@ export default function Rodape() {
             <li>Home</li><li>Explorar</li><li>Solicitação</li>
           </ul>
         </div>
-        <div>
-          <h4 className="font-semibold mb-3 text-sm">Suporte</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>Central de ajuda</li><li>Contato</li><li>Política de privacidade</li>
-          </ul>
-        </div>
+        
       </div>
       <div className="border-t border-border/50 py-6 text-center text-xs text-muted-foreground">
         © 2026 GymZus Pass.. Todos os direitos reservados.

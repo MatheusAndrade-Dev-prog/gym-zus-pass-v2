@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Explorar from '@/components/Explorar';
 import SolicitacaoModal from '@/components/SolicitacaoModal';
 import Topo from '@/components/Topo';
+import Rodape from '@/components/Rodape';
 
 export default function PaginaExplorar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,6 +32,8 @@ export default function PaginaExplorar() {
          }}
        />
         <Explorar />
+
+        <Rodape />
       </div>
     </main>
   );

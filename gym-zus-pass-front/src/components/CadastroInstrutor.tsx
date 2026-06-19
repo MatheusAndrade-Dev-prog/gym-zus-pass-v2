@@ -11,49 +11,31 @@ export default function CadastroInstrutor() {
   const [dataNascimento, setDataNascimento] = useState("");
   const [cpf, setCpf] = useState("");
   const [cref, setCref] = useState("");
-  
-  // Campos de Endereço
   const [cep, setCep] = useState("");
   const [endereco, setEndereco] = useState("");
   const [numero, setNumero] = useState("");
   const [complemento, setComplemento] = useState("");
   const [bairro, setBairro] = useState("");
   const [cidade, setCidade] = useState("");
-  const [estado, setEstado] = useState(""); // ✅ Adicionado estado para a UF (Ex: SP, RJ)
-  
+  const [estado, setEstado] = useState("");
   const [descricao, setDescricao] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // ✅ FUNÇÃO MÁGICA: Busca o CEP automaticamente na API ViaCEP
   const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Remove tudo que não for número
     const cepDigitado = e.target.value.replace(/\D/g, "");
     setCep(cepDigitado);
-
-    // Quando o CEP tiver exatamente 8 dígitos, faz a busca na API ViaCEP
     if (cepDigitado.length === 8) {
       try {
         const response = await fetch(`https://viacep.com.br/ws/${cepDigitado}/json/`);
         const data = await response.json();
-
-        // Se a API retornar erro (CEP inexistente)
-        if (data.erro) {
-          alert("CEP não encontrado!");
-          return;
-        }
-
-        // ✅ Preenche os campos automaticamente com os dados da API
+        if (data.erro) { alert("CEP não encontrado!"); return; }
         setEndereco(data.logradouro || "");
         setBairro(data.bairro || "");
         setCidade(data.localidade || "");
         setEstado(data.uf || "");
-
-        // Pula o cursor automaticamente para o campo "Número"
         document.getElementById("campo-numero")?.focus();
-
       } catch (error) {
-        console.error("Erro ao buscar o CEP:", error);
         alert("Erro na busca do CEP. Verifique sua conexão.");
       }
     }
@@ -62,163 +44,218 @@ export default function CadastroInstrutor() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-
     try {
       const docRef = await addDoc(collection(db, "cadastroInstrutor"), {
-        nome_completo: nomeCompleto,
-        email: email,
-        senha: senha,
-        dataDeNascimento: dataNascimento
-          ? Timestamp.fromDate(new Date(dataNascimento))
-          : null,
-        cpf: cpf.replace(/\D/g, ""),
-        cref: cref,
-        cep: cep,
-        endereço: endereco,
-        numero: String(numero),
-        complemento: complemento,
-        bairro: bairro,
-        cidade: cidade,
-        estado: estado, // ✅ Salvando o estado (UF) no banco de dados
-        descricao: descricao,
+        nome_completo: nomeCompleto, email, senha,
+        dataDeNascimento: dataNascimento ? Timestamp.fromDate(new Date(dataNascimento)) : null,
+        cpf: cpf.replace(/\D/g, ""), cref, cep, endereço: endereco,
+        numero: String(numero), complemento, bairro, cidade, estado, descricao,
       });
-
       alert("Instrutor cadastrado com sucesso!");
-
-      // Limpa os campos
       setNomeCompleto(""); setEmail(""); setSenha(""); setDataNascimento("");
       setCpf(""); setCref(""); setCep(""); setEndereco(""); setNumero("");
       setComplemento(""); setBairro(""); setCidade(""); setEstado(""); setDescricao("");
-
-      // ✅ Redireciona para o perfil do instrutor
       router.push(`/usuario-instrutor/${docRef.id}`);
-
     } catch (error) {
-      console.error("Erro ao integrar com o Firestore:", error);
       alert("Houve um erro na integração com o banco de dados.");
     } finally {
       setLoading(false);
     }
   };
 
+  // ── Tokens de estilo reutilizáveis ────────────────────────────────
+  const inputBase =
+    "w-full rounded-xl px-4 py-3 text-sm text-white outline-none transition-all placeholder-white/25 focus:ring-1 focus:ring-[#ff6b00]";
+  const inputNormal  = `${inputBase} bg-white/[0.06] border border-white/10`;
+  const inputAuto    = `${inputBase} bg-white/[0.03] border border-white/[0.07] text-white/55`;
+  const labelBase    = "block text-[11px] font-semibold text-white/45 uppercase tracking-widest mb-1.5";
+  const sectionTitle = "text-[11px] font-semibold tracking-widest uppercase mb-4";
+  const divider      = "h-px my-6 bg-white/[0.07]";
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-1">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full lg:w-4/5 max-w-[1500px] mx-auto">
+    <div
+      className="flex items-start justify-center min-h-screen p-6"
+      style={{ background: "linear-gradient(180deg, #0f2042 0%, #0f172a 40%, #090d16 100%)" }}
+    >
+      <div
+        className="w-full lg:w-4/5 max-w-[900px] mx-auto rounded-2xl p-8 md:p-10"
+        style={{
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.10)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        {/* ── Cabeçalho ── */}
+        <div
+          className="flex items-center gap-4 mb-8 pb-6"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+        >
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-base tracking-widest shrink-0"
+            style={{ background: "#ff6b00", boxShadow: "0 0 0 3px rgba(255,107,0,0.18)" }}
+          >
+            GZ
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-white mb-0.5">Cadastro de Instrutor</h2>
+            <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+              Preencha os dados para criar seu perfil profissional
+            </p>
+          </div>
+          {/* Badge de profissional */}
+          <div
+            className="ml-auto text-[11px] font-semibold px-3 py-1.5 rounded-lg tracking-wide whitespace-nowrap"
+            style={{
+              background: "rgba(0,200,83,0.10)",
+              border: "1px solid rgba(0,200,83,0.30)",
+              color: "#00c853",
+            }}
+          >
+            ✓ Profissional
+          </div>
+        </div>
 
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Cadastro de Instrutor</h2>
-
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-0" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 
+            {/* ── Seção: Dados Pessoais ── */}
             <div className="md:col-span-12">
-              <label className="block text-gray-700 font-medium mb-1">Nome Completo</label>
+              <p className={sectionTitle} style={{ color: "#ff6b00" }}>Dados pessoais</p>
+            </div>
+
+            <div className="md:col-span-12">
+              <label className={labelBase}>Nome Completo</label>
               <input type="text" value={nomeCompleto} onChange={(e) => setNomeCompleto(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Digite seu nome completo" required />
+                className={inputNormal} placeholder="Digite seu nome completo" required />
             </div>
 
             <div className="md:col-span-6">
-              <label className="block text-gray-700 font-medium mb-1">E-mail</label>
+              <label className={labelBase}>E-mail</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="email@exemplo.com" required />
+                className={inputNormal} placeholder="email@exemplo.com" required />
             </div>
 
             <div className="md:col-span-6">
-              <label className="block text-gray-700 font-medium mb-1">Senha</label>
+              <label className={labelBase}>Senha</label>
               <input type="password" value={senha} onChange={(e) => setSenha(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Crie uma senha" required />
+                className={inputNormal} placeholder="Crie uma senha" required />
             </div>
 
             <div className="md:col-span-4">
-              <label className="block text-gray-700 font-medium mb-1">Data de Nascimento</label>
+              <label className={labelBase}>Data de Nascimento</label>
               <input type="date" value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required />
+                className={inputNormal} style={{ colorScheme: "dark" }} required />
             </div>
 
             <div className="md:col-span-4">
-              <label className="block text-gray-700 font-medium mb-1">CPF</label>
+              <label className={labelBase}>CPF</label>
               <input type="text" value={cpf} onChange={(e) => setCpf(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="000.000.000-00" required />
+                className={inputNormal} placeholder="000.000.000-00" required />
             </div>
 
+            {/* CREF — destaque verde (credencial profissional) */}
             <div className="md:col-span-4">
-              <label className="block text-gray-700 font-medium mb-1">Numeração do CREF</label>
-              <input type="text" value={cref} onChange={(e) => setCref(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="012345-G/SP" required />
+              <label
+                className="block text-[11px] font-semibold uppercase tracking-widest mb-1.5"
+                style={{ color: "#00c853" }}
+              >
+                Numeração do CREF
+              </label>
+              <input
+                type="text" value={cref} onChange={(e) => setCref(e.target.value)}
+                className={`${inputBase} focus:ring-[#00c853]`}
+                style={{ background: "rgba(0,200,83,0.06)", border: "1px solid rgba(0,200,83,0.35)" }}
+                placeholder="012345-G/SP" required
+              />
             </div>
 
-            {/* ✅ CAMPO DE CEP (Ativa a API ViaCEP) */}
+            {/* ── Separador Endereço ── */}
+            <div className="md:col-span-12">
+              <div className={divider} />
+              <p className={sectionTitle} style={{ color: "#ff6b00" }}>Endereço</p>
+            </div>
+
+            {/* CEP — destaque laranja (aciona ViaCEP) */}
             <div className="md:col-span-4">
-              <label className="block text-gray-700 font-medium mb-1 text-blue-600">CEP</label>
-              <input type="text" maxLength={9} value={cep} onChange={handleCepChange}
-                className="w-full border-2 border-blue-400 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                placeholder="Apenas números" required />
+              <label
+                className="block text-[11px] font-semibold uppercase tracking-widest mb-1.5"
+                style={{ color: "#ff6b00" }}
+              >
+                CEP
+              </label>
+              <input
+                type="text" maxLength={9} value={cep} onChange={handleCepChange}
+                className={`${inputBase} focus:ring-[#ff6b00]`}
+                style={{ background: "rgba(255,107,0,0.07)", border: "1px solid rgba(255,107,0,0.45)" }}
+                placeholder="Apenas números" required
+              />
             </div>
 
             <div className="md:col-span-5">
-              <label className="block text-gray-700 font-medium mb-1">Endereço (Rua/Av)</label>
+              <label className={labelBase}>Endereço (Rua/Av)</label>
               <input type="text" value={endereco} onChange={(e) => setEndereco(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-                placeholder="Rua..." required />
+                className={inputAuto} placeholder="Preenchido automaticamente" required />
             </div>
 
             <div className="md:col-span-3">
-              <label className="block text-gray-700 font-medium mb-1">Número</label>
+              <label className={labelBase}>Número</label>
               <input id="campo-numero" type="text" value={numero} onChange={(e) => setNumero(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Nº" required />
+                className={inputNormal} placeholder="Nº" required />
             </div>
 
             <div className="md:col-span-12">
-              <label className="block text-gray-700 font-medium mb-1">
-                Complemento <span className="text-gray-400 text-sm">(Opcional)</span>
+              <label className={labelBase}>
+                Complemento{" "}
+                <span className="text-white/25 normal-case font-normal tracking-normal">(Opcional)</span>
               </label>
               <input type="text" value={complemento} onChange={(e) => setComplemento(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Apartamento, bloco, fundos..." />
+                className={inputNormal} placeholder="Apartamento, bloco, fundos..." />
             </div>
 
             <div className="md:col-span-5">
-              <label className="block text-gray-700 font-medium mb-1">Bairro</label>
+              <label className={labelBase}>Bairro</label>
               <input type="text" value={bairro} onChange={(e) => setBairro(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-                required />
+                className={inputAuto} required />
             </div>
 
             <div className="md:col-span-5">
-              <label className="block text-gray-700 font-medium mb-1">Cidade</label>
+              <label className={labelBase}>Cidade</label>
               <input type="text" value={cidade} onChange={(e) => setCidade(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-                required />
+                className={inputAuto} required />
             </div>
 
-            {/* ✅ CAMPO ESTADO (UF) */}
             <div className="md:col-span-2">
-              <label className="block text-gray-700 font-medium mb-1">UF</label>
+              <label className={labelBase}>UF</label>
               <input type="text" value={estado} onChange={(e) => setEstado(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-                placeholder="SP, RJ..." required />
+                className={inputAuto} placeholder="SP" required />
             </div>
 
-            <div className="md:col-span-12 text-center">
-              <label className="block text-gray-700 font-medium mb-1 text-left">Descrição</label>
-              <textarea value={descricao} onChange={(e) => setDescricao(e.target.value)}
-                rows={4}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Descreva suas experiências, especialidades e um pouco sobre você..." />
+            {/* ── Separador Descrição ── */}
+            <div className="md:col-span-12">
+              <div className={divider} />
+              <p className={sectionTitle} style={{ color: "#ff6b00" }}>Sobre você</p>
+            </div>
+
+            <div className="md:col-span-12">
+              <label className={labelBase}>Descrição</label>
+              <textarea
+                value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={4}
+                className={`${inputNormal} resize-y`}
+                placeholder="Descreva suas experiências, especialidades e um pouco sobre você..."
+              />
             </div>
 
           </div>
 
-          <hr className="my-6 border-gray-200" />
+          <div className={divider} />
 
-          <button type="submit" disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition-colors shadow-lg disabled:opacity-50">
+          <button
+            type="submit" disabled={loading}
+            className="w-full text-white font-bold py-3.5 rounded-xl transition-all active:scale-95 disabled:opacity-40"
+            style={{ background: loading ? "#cc5500" : "#ff6b00" }}
+            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.background = "#e55e00"; }}
+            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.background = "#ff6b00"; }}
+          >
             {loading ? "Cadastrando..." : "Finalizar Cadastro"}
           </button>
         </form>

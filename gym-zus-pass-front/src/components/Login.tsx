@@ -8,90 +8,149 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  // Adicionamos um estado para escolher o tipo durante o desenvolvimento
-  const [tipoSimulado, setTipoSimulado] = useState("aluno"); 
+  const [tipoSimulado, setTipoSimulado] = useState("aluno");
   const router = useRouter();
 
- const handleLogin = async (e: FormEvent) => {
-  e.preventDefault();
-
-  try {
-    const auth = getAuth();
-    const userCredential = await signInWithEmailAndPassword(auth, email, senha);
-    const uid = userCredential.user.uid;
-
-    if (tipoSimulado === "instrutor") {
-      router.push(`/usuario-instrutor/${uid}`);
-    } else {
-      router.push(`/usuario-aluno/${uid}`);
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+      const uid = userCredential.user.uid;
+      if (tipoSimulado === "instrutor") {
+        router.push(`/usuario-instrutor/${uid}`);
+      } else {
+        router.push(`/usuario-aluno/${uid}`);
+      }
+    } catch (error) {
+      alert("Email ou senha incorretos.");
     }
-  } catch (error) {
-    alert("Email ou senha incorretos.");
-  }
-};
+  };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-      <main className="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg">
+    <div
+      className="flex items-center justify-center min-h-screen px-4"
+      style={{
+        background: "linear-gradient(180deg, #0f2042 0%, #0f172a 40%, #090d16 100%)",
+      }}
+    >
+      <main className="w-full max-w-md p-10 rounded-2xl"
+        style={{
+          background: "rgba(255, 255, 255, 0.04)",
+          border: "1px solid rgba(255, 255, 255, 0.10)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
         <form onSubmit={handleLogin} className="flex flex-col text-center">
-          
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-inner">
+
+          {/* Logo */}
+          <div className="flex justify-center mb-3">
+            <div
+              className="w-16 h-16 rounded-xl flex items-center justify-center text-white font-bold text-xl tracking-widest"
+              style={{
+                background: "#ff6b00",
+                boxShadow: "0 0 0 4px rgba(255, 107, 0, 0.18)",
+              }}
+            >
               GZ
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-800 mb-6 text-primary">Tela de login </h1>
+          <h1 className="text-xl font-semibold text-white mb-1">
+            Entrar na sua conta
+          </h1>
+          <p className="text-sm mb-7" style={{ color: "rgba(255,255,255,0.4)" }}>
+            GymZus Pass
+          </p>
 
-          {/* Seletor para alternar entre os perfis */}
+          {/* Perfil */}
           <div className="mb-4 text-left">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
-            <select 
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none"
+            <label
+              className="block text-xs font-medium mb-1.5 uppercase tracking-widest"
+              style={{ color: "rgba(255,255,255,0.5)" }}
+            >
+              Perfil
+            </label>
+            <select
+              className="w-full px-4 py-3 rounded-xl text-sm text-white outline-none transition-all"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.12)",
+              }}
               value={tipoSimulado}
               onChange={(e) => setTipoSimulado(e.target.value)}
             >
-              <option value="aluno">Aluno</option>
-              <option value="instrutor">Instrutor</option>
+              <option className="text-black" value="aluno">Aluno</option>
+              <option className="text-black" value="instrutor">Instrutor</option>
             </select>
           </div>
 
-          <div className="relative text-left mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          {/* Email */}
+          <div className="text-left mb-4">
+            <label
+              htmlFor="email"
+              className="block text-xs font-medium mb-1.5 uppercase tracking-widest"
+              style={{ color: "rgba(255,255,255,0.5)" }}
+            >
+              Email
+            </label>
             <input
               type="email"
               id="email"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder-gray-400"
-              placeholder="Seu e-mail"
+              className="w-full px-4 py-3 rounded-xl text-sm text-white outline-none transition-all"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.12)",
+              }}
+              placeholder="seu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
-          <div className="relative text-left mb-4">
-            <label htmlFor="senha" className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+          {/* Senha */}
+          <div className="text-left mb-6">
+            <label
+              htmlFor="senha"
+              className="block text-xs font-medium mb-1.5 uppercase tracking-widest"
+              style={{ color: "rgba(255,255,255,0.5)" }}
+            >
+              Senha
+            </label>
             <input
               type="password"
               id="senha"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder-gray-400"
-              placeholder="Sua senha"
+              className="w-full px-4 py-3 rounded-xl text-sm text-white outline-none transition-all"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.12)",
+              }}
+              placeholder="••••••••"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required
             />
           </div>
 
-          <button 
-            type="submit" 
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-md transition-all active:scale-95 mb-4"
+          {/* Botão */}
+          <button
+            type="submit"
+            className="w-full text-white font-bold py-3 rounded-xl transition-all active:scale-95 mb-5"
+            style={{ background: "#ff6b00" }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#e55e00")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#ff6b00")}
           >
             Entrar
           </button>
 
-          <p className="text-sm text-gray-600">
+          <p className="text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
             Não tem conta?{" "}
-            <Link href="/" className="text-blue-600 font-bold hover:underline">
+            <Link
+              href="/"
+              className="font-semibold no-underline hover:underline"
+              style={{ color: "#ff6b00" }}
+            >
               Voltar
             </Link>
           </p>
