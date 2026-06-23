@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
 import { db } from "../firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, Timestamp, setDoc, doc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
 export default function CadastroInstrutor() {
-  const [nomeCompleto, setNomeCompleto] = useState("");
+    const [nomeCompleto, setNomeCompleto] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
@@ -45,19 +46,41 @@ export default function CadastroInstrutor() {
     event.preventDefault();
     setLoading(true);
     try {
-      const docRef = await addDoc(collection(db, "cadastroInstrutor"), {
-        nome_completo: nomeCompleto, email, senha,
+      const auth = getAuth();
+      // 1. Cria a conta no Firebase Auth (A senha fica segura aqui, não no banco)
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+      const uid = userCredential.user.uid;
+
+      // 2. Salva os dados no Firestore usando o UID como ID do documento
+      await setDoc(doc(db, "cadastroInstrutor", uid), {
+        nome_completo: nomeCompleto,
+        email,
         dataDeNascimento: dataNascimento ? Timestamp.fromDate(new Date(dataNascimento)) : null,
-        cpf: cpf.replace(/\D/g, ""), cref, cep, endereço: endereco,
-        numero: String(numero), complemento, bairro, cidade, estado, descricao,
+        cpf: cpf.replace(/\D/g, ""),
+        cref,
+        cep,
+        endereço: endereco,
+        numero: String(numero),
+        complemento,
+        bairro,
+        cidade,
+        estado,
+        descricao,
+        // Repare que o campo 'senha' foi removido daqui!
       });
+
       alert("Instrutor cadastrado com sucesso!");
       setNomeCompleto(""); setEmail(""); setSenha(""); setDataNascimento("");
       setCpf(""); setCref(""); setCep(""); setEndereco(""); setNumero("");
       setComplemento(""); setBairro(""); setCidade(""); setEstado(""); setDescricao("");
-      router.push(`/usuario-instrutor/${docRef.id}`);
-    } catch (error) {
-      alert("Houve um erro na integração com o banco de dados.");
+      
+      router.push(`/usuario-instrutor/${uid}`);
+    } catch (error: any) {
+      if (error.code === "auth/email-already-in-use") {
+        alert("Este e-mail já está cadastrado.");
+      } else {
+        alert("Erro ao realizar cadastro: " + error.message);
+      }
     } finally {
       setLoading(false);
     }

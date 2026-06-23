@@ -4,29 +4,42 @@ import { useState, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase"; 
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [tipoSimulado, setTipoSimulado] = useState("aluno");
+  const [tipoSimulado, setTipoSimulado] = useState("aluno"); 
   const router = useRouter();
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
+
     try {
-      const auth = getAuth();
-      const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+      // Como já importamos o 'auth' lá em cima, removemos o "const auth = getAuth();" daqui.
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), senha);
       const uid = userCredential.user.uid;
+
       if (tipoSimulado === "instrutor") {
         router.push(`/usuario-instrutor/${uid}`);
       } else {
         router.push(`/usuario-aluno/${uid}`);
       }
-    } catch (error) {
-      alert("Email ou senha incorretos.");
+    } catch (error: any) {
+      console.error("Código do erro:", error.code);
+      console.error("Mensagem do erro:", error.message);
+      
+      if (error.code === 'auth/user-not-found') {
+        alert("Nenhum usuário encontrado com este email.");
+      } else if (error.code === 'auth/wrong-password') {
+        alert("Senha incorreta.");
+      } else if (error.code === 'auth/invalid-credential') {
+        alert("Credenciais inválidas. Verifique o email e a senha.");
+      } else {
+        alert("Erro ao fazer login. Verifique o console.");
+      }
     }
   };
-
   return (
     <div
       className="flex items-center justify-center min-h-screen px-4"

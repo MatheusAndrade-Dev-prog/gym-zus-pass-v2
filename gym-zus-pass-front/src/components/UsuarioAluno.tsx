@@ -1,14 +1,15 @@
 'use client';
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 
+// 1. Substituímos 'plano' por 'descricao' na tipagem do TypeScript
 interface AlunoData {
   nome_completo: string;
   email: string;
   cidade: string;
   bairro: string;
-  plano?: string;
+  descricao?: string; 
 }
 
 export default function UsuarioAluno({ id }: { id: string }) {
@@ -16,18 +17,37 @@ export default function UsuarioAluno({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  if (!id) return; // ← adicione essa linha
+    if (!id) return;
   
-  const buscarAluno = async () => {
-    const docRef = doc(db, "cadastroAluno", id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      setAluno(docSnap.data() as AlunoData);
+    const buscarAluno = async () => {
+      const docRef = doc(db, "cadastroAluno", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setAluno(docSnap.data() as AlunoData);
+      }
+      setLoading(false);
+    };
+    buscarAluno();
+  }, [id]);
+
+  const handleExcluirConta = async () => {
+    const confirmar = window.confirm("Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.");
+    
+    if (!confirmar) return;
+
+    try {
+      setLoading(true);
+      const docRef = doc(db, "cadastroAluno", id);
+      await deleteDoc(docRef);
+      
+      alert("Conta excluída com sucesso!");
+      window.location.href = "/"; 
+    } catch (error) {
+      console.error("Erro ao excluir conta:", error);
+      alert("Ocorreu um erro ao tentar excluir a conta. Tente novamente.");
+      setLoading(false);
     }
-    setLoading(false);
   };
-  buscarAluno();
-}, [id]);
 
   if (loading)
     return (
@@ -121,18 +141,8 @@ export default function UsuarioAluno({ id }: { id: string }) {
 
         {/* Actions */}
         <div className="flex flex-col items-center md:items-end gap-3 flex-shrink-0">
-          {aluno.plano && (
-            <span
-              className="inline-flex items-center gap-1.5 text-xs font-medium px-4 py-1.5 rounded-full"
-              style={{
-                background: 'rgba(0,200,83,0.1)',
-                border: '1px solid rgba(0,200,83,0.3)',
-                color: '#00c853',
-              }}
-            >
-              ★ {aluno.plano}
-            </span>
-          )}
+          {/* O badge do plano antigo foi removido daqui para focar na descrição abaixo */}
+          
           <button
             className="flex items-center gap-2 text-sm px-4 py-2 rounded-xl transition-opacity hover:opacity-80"
             style={{
@@ -143,12 +153,23 @@ export default function UsuarioAluno({ id }: { id: string }) {
           >
             ✏ Editar perfil
           </button>
+
+          <button
+            onClick={handleExcluirConta}
+            className="flex items-center gap-2 text-sm px-4 py-2 rounded-xl transition-opacity hover:opacity-80"
+            style={{
+              background: 'rgba(239, 68, 68, 0.08)',
+              border: '1px solid rgba(239, 68, 68, 0.25)',
+              color: '#ef4444',
+            }}
+          >
+            🗑 Excluir perfil
+          </button>
         </div>
       </div>
 
-      {/* Cards de dados pessoais + plano */}
+      {/* Grid de Informações */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
         {/* Dados pessoais */}
         <div
           className="rounded-2xl p-6"
@@ -184,40 +205,36 @@ export default function UsuarioAluno({ id }: { id: string }) {
           ))}
         </div>
 
-        {/* Plano */}
+        {/* 2. Nova Aba Substituta: Descrição / Objetivos */}
         <div
-          className="rounded-2xl p-6"
+          className="rounded-2xl p-6 flex flex-col justify-between"
           style={{
             background: 'rgba(255,255,255,0.03)',
             border: '1px solid rgba(255,255,255,0.07)',
           }}
         >
-          <h3
-            className="text-xs font-medium uppercase tracking-widest mb-4 flex items-center gap-2"
-            style={{ color: 'rgba(255,255,255,0.4)' }}
-          >
-            <span style={{ color: '#ff6b00' }}>◈</span> Plano e assinatura
-          </h3>
-          {[
-            { label: 'Plano atual', value: aluno.plano ?? '—', highlight: true },
-            { label: 'Status', value: 'Ativo', green: true },
-          ].map(({ label, value, highlight, green }) => (
-            <div
-              key={label}
-              className="flex justify-between items-center py-2.5"
-              style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+          <div>
+            <h3
+              className="text-xs font-medium uppercase tracking-widest mb-4 flex items-center gap-2"
+              style={{ color: 'rgba(255,255,255,0.4)' }}
             >
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                {label}
-              </span>
-              <span
-                className="text-sm font-medium"
-                style={{ color: green ? '#00c853' : highlight ? '#ff6b00' : 'rgba(255,255,255,0.85)' }}
-              >
-                {value}
-              </span>
-            </div>
-          ))}
+              <span style={{ color: '#ff6b00' }}>◈</span> Descrição & Foco
+            </h3>
+            <p 
+              className="text-sm leading-relaxed min-h-[80px]" 
+              style={{ color: aluno.descricao ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.3)' }}
+            >
+              {aluno.descricao ? `"${aluno.descricao}"` : "Nenhuma descrição ou objetivo informado ainda."}
+            </p>
+          </div>
+          
+          <div 
+            className="pt-3 mt-4 flex justify-between items-center text-xs"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.3)' }}
+          >
+            <span>Status da Conta</span>
+            <span style={{ color: '#00c853', fontWeight: 'bold' }}>● Ativo</span>
+          </div>
         </div>
       </div>
 
