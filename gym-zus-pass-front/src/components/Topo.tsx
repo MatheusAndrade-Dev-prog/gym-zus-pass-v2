@@ -4,10 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-// ⚠️ Ajuste esse import para o caminho do seu firebase config
 import '@/firebase'; 
 
-// Tipagem simples do usuário que vamos guardar no estado
 type UsuarioLogado = {
   nome: string | null;
   email: string | null;
@@ -16,20 +14,13 @@ type UsuarioLogado = {
 
 export default function Topo() {
   const [mostrarOpcoes, setMostrarOpcoes] = useState(false);
-
-  // 👤 Estado do usuário: null = deslogado, objeto = logado
   const [usuario, setUsuario] = useState<UsuarioLogado | null>(null);
-
-  // 🔽 Controla o dropdown do avatar
   const [mostrarMenuUsuario, setMostrarMenuUsuario] = useState(false);
-
-  // 📌 Ref para fechar o dropdown ao clicar fora (padrão que você já usa no projeto!)
   const menuRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
   const auth = getAuth();
 
-  // 🔥 Escuta mudanças de auth do Firebase em tempo real
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
@@ -42,12 +33,9 @@ export default function Topo() {
         setUsuario(null);
       }
     });
-
-    // Limpa o listener quando o componente desmonta
     return () => unsubscribe();
   }, [auth]);
 
-  // 🖱️ Fecha o dropdown ao clicar fora — mesmo padrão do seu projeto
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -58,14 +46,12 @@ export default function Topo() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 🚪 Função de logout
   async function handleLogout() {
     await signOut(auth);
     setMostrarMenuUsuario(false);
     router.push('/');
   }
 
-  // 🔤 Pega a inicial do nome para mostrar no avatar quando não tem foto
   const inicial = usuario?.nome?.charAt(0).toUpperCase() 
     ?? usuario?.email?.charAt(0).toUpperCase() 
     ?? '?';
@@ -101,13 +87,7 @@ export default function Topo() {
                   />
                 </div>
 
-                {/* 
-                  ✅ AQUI ESTÁ A MUDANÇA PRINCIPAL:
-                  Se o usuário está logado → mostra avatar com dropdown
-                  Se não está logado → mostra os botões originais
-                */}
                 {usuario ? (
-                  // 👤 USUÁRIO LOGADO — Avatar com menu
                   <div className="relative" ref={menuRef}>
                     <button
                       onClick={() => setMostrarMenuUsuario(!mostrarMenuUsuario)}
@@ -115,24 +95,20 @@ export default function Topo() {
                       title={usuario.nome ?? usuario.email ?? 'Meu perfil'}
                     >
                       {usuario.foto ? (
-                        // Se tem foto no Google/Facebook, mostra ela
                         <img
                           src={usuario.foto}
                           alt="Foto do perfil"
                           className="w-9 h-9 rounded-full border-2 border-green-500 object-cover"
                         />
                       ) : (
-                        // Sem foto → círculo com inicial (igual seu design verde)
                         <div className="w-9 h-9 rounded-full bg-green-500 border-2 border-green-400 flex items-center justify-center text-white font-bold text-sm">
                           {inicial}
                         </div>
                       )}
                     </button>
 
-                    {/* Dropdown do usuário */}
                     {mostrarMenuUsuario && (
                       <div className="absolute right-0 mt-2 w-52 bg-white border border-gray-200 rounded-md shadow-xl z-50 flex flex-col p-2 gap-1">
-                        {/* Info do usuário no topo do dropdown */}
                         <div className="px-3 py-2 border-b border-gray-100 mb-1">
                           <p className="text-sm font-semibold text-gray-800 truncate">
                             {usuario.nome ?? 'Usuário'}
@@ -142,16 +118,15 @@ export default function Topo() {
                           </p>
                         </div>
 
-                        {/* Editar perfil — leva para a página de edição */}
+                        {/* ✅ ALTERAÇÃO: era "/perfil/editar" com texto "Editar Perfil" */}
                         <Link
-                          href="/perfil/editar"
+                          href="/perfil"
                           className="px-4 py-2 text-sm text-center text-gray-700 bg-yellow-400 hover:bg-yellow-500 rounded-md transition-colors"
                           onClick={() => setMostrarMenuUsuario(false)}
                         >
-                          ✏️ Editar Perfil
+                          👤 Acessar Perfil
                         </Link>
 
-                        {/* Excluir conta — leva para página de confirmação */}
                         <Link
                           href="/perfil/excluir"
                           className="px-4 py-2 text-sm text-center text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
@@ -160,7 +135,6 @@ export default function Topo() {
                           🗑️ Excluir Conta
                         </Link>
 
-                        {/* Sair */}
                         <button
                           onClick={handleLogout}
                           className="px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
@@ -172,7 +146,6 @@ export default function Topo() {
                   </div>
 
                 ) : (
-                  // 🔓 USUÁRIO DESLOGADO — Botões originais sem nenhuma mudança
                   <>
                     <Link href="/login" className="border border-black text-gray-900 px-2 py-1 border-r-2 rounded-md">
                       Fazer Login
