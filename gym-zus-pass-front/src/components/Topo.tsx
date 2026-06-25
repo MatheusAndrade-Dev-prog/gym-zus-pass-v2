@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import '@/firebase'; 
+import '@/firebase';
 
 type UsuarioLogado = {
   nome: string | null;
@@ -52,18 +52,18 @@ export default function Topo() {
     router.push('/');
   }
 
-  const inicial = usuario?.nome?.charAt(0).toUpperCase() 
-    ?? usuario?.email?.charAt(0).toUpperCase() 
+  const inicial = usuario?.nome?.charAt(0).toUpperCase()
+    ?? usuario?.email?.charAt(0).toUpperCase()
     ?? '?';
 
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/70 border-b border-border/50">
-      <div className="mx-auto px-6 h-16 flex items-center justify-between ">
+      <div className="mx-auto px-6 h-16 flex items-center justify-between">
         <nav className="w-full px-6 h-16 flex items-center justify-between">
           <div className="flex flex-col w-full px-6 py-2">
-            
-            <nav className="hidden md:flex items-center justify-between flex-wrap px-5 py-2"> 
-              
+
+            <nav className="hidden md:flex items-center justify-between flex-wrap px-5 py-2">
+
               <div className="font-display text-2xl tracking-wider flex items-center gap-2">
                 <h3 className="text-ml text-white font-bold text-green-500 tracking-tight">
                   GymZus Pass
@@ -77,13 +77,13 @@ export default function Topo() {
                 <a href="/sobre" className="no-underline text-muted-foreground hover:text-foreground transition text-2xl">Sobre</a>
               </nav>
 
-              <div className="flex flex-row items-center gap-3 ml-auto"> 
-              
+              <div className="flex flex-row items-center gap-3 ml-auto">
+
                 <div className="relative">
-                  <input 
-                    className="w-48 xl:w-64 border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-green-400 shadow-sm" 
-                    type="search" 
-                    placeholder="Search..." 
+                  <input
+                    className="w-48 xl:w-64 border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-green-400 shadow-sm"
+                    type="search"
+                    placeholder="Search..."
                   />
                 </div>
 
@@ -118,7 +118,9 @@ export default function Topo() {
                           </p>
                         </div>
 
-                        {/* ✅ ALTERAÇÃO: era "/perfil/editar" com texto "Editar Perfil" */}
+                        {/* ✅ ALTERAÇÃO 1: href era "/perfil/editar", agora é "/perfil" */}
+                        {/* ✅ ALTERAÇÃO 2: texto era "Editar Perfil", agora é "Acessar Perfil" */}
+                        {/* ✅ ALTERAÇÃO 3: ícone era ✏️, agora é 👤 */}
                         <Link
                           href="/perfil"
                           className="px-4 py-2 text-sm text-center text-gray-700 bg-yellow-400 hover:bg-yellow-500 rounded-md transition-colors"
@@ -135,6 +137,7 @@ export default function Topo() {
                           🗑️ Excluir Conta
                         </Link>
 
+                        {/* ✅ DESLOGAR: handleLogout já fazia signOut + redirect, não mudou nada */}
                         <button
                           onClick={handleLogout}
                           className="px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
@@ -152,7 +155,7 @@ export default function Topo() {
                     </Link>
 
                     <div className="relative border bg-yellow-400 border-black px-1 py-1 border-r-2 rounded-md hover:bg-gray-100 transition-colors">
-                      <button 
+                      <button
                         onClick={() => setMostrarOpcoes(!mostrarOpcoes)}
                         className="hover:bg-yellow-500 px-2 py-0 rounded-md text-gray-900 font-bold"
                       >
